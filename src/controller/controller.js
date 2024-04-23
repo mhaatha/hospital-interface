@@ -1,6 +1,7 @@
 const employee = require("../model/employee");
 const patient = require("../model/patient");
 const hospitalView = require("../view/view");
+const validations = require("../validations/index");
 
 const help = async () => {
   try {
@@ -13,8 +14,16 @@ const help = async () => {
 
 const register = async (username, password, role) => {
   try {
-    const employeeRegister = await employee.register(username, password, role);
-    await hospitalView.registerView(employeeRegister);
+    if (role !== "admin" && role !== "dokter") {
+      await hospitalView.wrongRole();
+    } else {
+      const employeeRegister = await employee.register(
+        username,
+        password,
+        role
+      );
+      await hospitalView.registerView(employeeRegister);
+    }
   } catch (error) {
     throw error;
   }
@@ -36,8 +45,13 @@ const login = async (username, password) => {
 
 const addPatient = async (id, namaPasien, ...penyakit) => {
   try {
-    const add = await patient.add(id, namaPasien, ...penyakit);
-    await hospitalView.addPatientView(add);
+    const isLogin = await validations.doctorValidations();
+    if (isLogin) {
+      const add = await patient.add(id, namaPasien, ...penyakit);
+      await hospitalView.addPatientView(add);
+    } else {
+      await hospitalView.notDoctor();
+    }
   } catch (error) {
     throw error;
   }
@@ -45,12 +59,17 @@ const addPatient = async (id, namaPasien, ...penyakit) => {
 
 const updatePatient = async (id, namaPasien, ...penyakit) => {
   try {
-    const update = await patient.update(id, namaPasien, ...penyakit);
+    const isLogin = await validations.doctorValidations();
+    if (isLogin) {
+      const update = await patient.update(id, namaPasien, ...penyakit);
 
-    if (update) {
-      await hospitalView.updatePatientViewSuccess(update);
+      if (update) {
+        await hospitalView.updatePatientViewSuccess(update);
+      } else {
+        await hospitalView.updatePatientViewFailed();
+      }
     } else {
-      await hospitalView.updatePatientViewFailed();
+      await hospitalView.notDoctor();
     }
   } catch (error) {
     throw error;
@@ -59,12 +78,17 @@ const updatePatient = async (id, namaPasien, ...penyakit) => {
 
 const deletePatient = async (id) => {
   try {
-    const deleted = await patient.deleted(id);
+    const isLogin = await validations.doctorValidations();
+    if (isLogin) {
+      const deleted = await patient.deleted(id);
 
-    if (deleted) {
-      await hospitalView.deletePatientViewSuccess(deleted);
+      if (deleted) {
+        await hospitalView.deletePatientViewSuccess(deleted);
+      } else {
+        await hospitalView.deletePatientViewFailed();
+      }
     } else {
-      await hospitalView.deletePatientViewFailed();
+      await hospitalView.notDoctor();
     }
   } catch (error) {
     throw error;
@@ -88,15 +112,19 @@ const logout = async () => {
 const show = async (option) => {
   try {
     let data = null;
-
+    const isLogin = await validations.doctorValidations();
     if (option === "employee") {
       data = await employee.findAll();
 
       await hospitalView.showSuccess(data);
     } else if (option === "patient") {
-      data = await patient.findAll();
+      if (isLogin) {
+        data = await patient.findAll();
 
-      await hospitalView.showSuccess(data);
+        await hospitalView.showSuccess(data);
+      } else {
+        await hospitalView.notDoctor();
+      }
     } else {
       await hospitalView.showFailed(option);
     }

@@ -161,6 +161,22 @@ const findByFailed = async (option) => {
   }
 };
 
+const notDoctor = async () => {
+  try {
+    console.log("You are not doctor.");
+  } catch (error) {
+    throw error;
+  }
+};
+
+const wrongRole = async () => {
+  try {
+    console.log("Role only admin and dokter");
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   help,
   registerView,
@@ -177,4 +193,6 @@ module.exports = {
   showFailed,
   findBySuccess,
   findByFailed,
+  notDoctor,
+  wrongRole,
 };
