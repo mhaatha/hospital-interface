@@ -179,11 +179,19 @@ const wrongRole = async () => {
 
 const noLogin = async () => {
   try {
-    console.log('You already login, please logout first.');
+    console.log("You already login, please logout first.");
   } catch (error) {
     throw error;
   }
-}
+};
+
+const notAdmin = async () => {
+  try {
+    console.log("Only admin can perform this action.");
+  } catch (error) {
+    throw error;
+  }
+};
 
 module.exports = {
   help,
@@ -203,5 +211,6 @@ module.exports = {
   findByFailed,
   notDoctor,
   wrongRole,
-  noLogin
+  noLogin,
+  notAdmin,
 };

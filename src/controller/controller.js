@@ -117,13 +117,18 @@ const logout = async () => {
 const show = async (option) => {
   try {
     let data = null;
-    const isLogin = await validations.doctorValidations();
+    const isDoctor = await validations.doctorValidations();
+    const isAdmin = await validations.onlyAdmin();
     if (option === "employee") {
-      data = await employee.findAll();
+      if (isAdmin) {
+        data = await employee.findAll();
 
-      await hospitalView.showSuccess(data);
+        await hospitalView.showSuccess(data);
+      } else {
+        await hospitalView.notAdmin();
+      }
     } else if (option === "patient") {
-      if (isLogin) {
+      if (isDoctor) {
         data = await patient.findAll();
 
         await hospitalView.showSuccess(data);
