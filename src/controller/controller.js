@@ -31,12 +31,17 @@ const register = async (username, password, role) => {
 
 const login = async (username, password) => {
   try {
-    const employeeLogin = await employee.login(username, password);
+    const isLogin = await validations.onlyOneLogin();
+    if (isLogin) {
+      const employeeLogin = await employee.login(username, password);
 
-    if (employeeLogin) {
-      await hospitalView.loginViewSuccess(employeeLogin);
+      if (employeeLogin) {
+        await hospitalView.loginViewSuccess(employeeLogin);
+      } else {
+        await hospitalView.loginViewFailed();
+      }
     } else {
-      await hospitalView.loginViewFailed();
+      await hospitalView.noLogin();
     }
   } catch (error) {
     throw error;

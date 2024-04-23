@@ -13,6 +13,7 @@ const doctorValidations = async () => {
     if (isLogin.length > 0) {
       const indexEmployee = employeeDb.indexOf(isLogin[0]);
       if (employeeDb[indexEmployee].role === "dokter") return true;
+
       return false;
     }
   } catch (error) {
@@ -20,4 +21,23 @@ const doctorValidations = async () => {
   }
 };
 
-module.exports = { doctorValidations };
+const onlyOneLogin = async () => {
+  try {
+    const employeeDb = await employeeModel.findAll();
+
+    // Filter apakah ada yang login
+    const isLogin = employeeDb.some((employee) => {
+      return employee.login === 1;
+    });
+
+    if (isLogin) return false;
+
+    return true;
+  } catch (error) {}
+};
+
+onlyOneLogin().then((result) => {
+  console.log(result);
+});
+
+module.exports = { doctorValidations, onlyOneLogin };

@@ -177,6 +177,14 @@ const wrongRole = async () => {
   }
 };
 
+const noLogin = async () => {
+  try {
+    console.log('You already login, please logout first.');
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
   help,
   registerView,
@@ -195,4 +203,5 @@ module.exports = {
   findByFailed,
   notDoctor,
   wrongRole,
+  noLogin
 };
