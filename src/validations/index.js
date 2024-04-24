@@ -36,10 +36,6 @@ const onlyOneLogin = async () => {
   } catch (error) {}
 };
 
-onlyOneLogin().then((result) => {
-  console.log(result);
-});
-
 const onlyAdmin = async () => {
   try {
     const employeeDb = await employeeModel.findAll();

@@ -149,7 +149,6 @@ const findPatientBy = async (option, optionValue) => {
 
     if ((option !== "id" && option !== "name") || patientData.length < 1) {
       await hospitalView.findByFailed(option);
-      console.log(option);
     } else {
       await hospitalView.findBySuccess(patientData, option);
     }
